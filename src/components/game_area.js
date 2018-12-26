@@ -3,11 +3,31 @@ import React, {Component} from "react";
 class GameArea extends Component{
   constructor(){
     super();
-
+    this.state={
+      posts:""
+    }
   }
 
   componentDidMount(){
     this.draw();
+    fetch("https://jsonplaceholder.typicode.com/posts")
+      .then( (res) => {
+        return res.json();
+      })
+      .then( (json) => {
+        this.setState({
+          posts: JSON.stringify(json)
+        });
+      })
+      .catch( (err) => {
+        console.log(err);
+      });
+  }
+
+  handleGetPost(){
+    const post = document.querySelector(".posts");
+
+    post.innerHTML = this.state.posts;
   }
 
   draw(){
@@ -22,6 +42,9 @@ class GameArea extends Component{
   }
   
 	render(){
+    const {posts} = this.state;
+
+    console.log(posts);
 
     return(
 			<React.Fragment>
@@ -29,6 +52,8 @@ class GameArea extends Component{
           <canvas ref="canvas" className="game-area">
           </canvas>
         </div>
+        <div className="posts"></div>
+        <button className="btn btn-default" onClick={this.handleGetPost.bind(this)}>Get Posts</button>
       </React.Fragment>
 		)
 	}
